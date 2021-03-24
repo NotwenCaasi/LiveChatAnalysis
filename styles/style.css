@@ -1,0 +1,36 @@
+/* Style the header */
+.header {
+    padding: 30px 50px;
+    height: 200px;
+    background-image: url("../images/header.jpg");
+    background-size: 100%;
+    color: #f1f1f1;
+    text-align: center;
+}
+
+/* create horizontal nav bar */
+nav {
+    display: inline-block;
+    vertical-align: bottom;
+}
+nav > ul{
+    list-style-type: none;
+}
+nav > ul > li{
+    float: left;
+    width: 16%;
+}
+nav >ul > li > a,form{
+    display: block;
+    padding: 10px 30px;
+    height: 60px;
+    background-color: #585858;
+}
+nav >ul > li > form{
+    background-color: #370044;
+}
+
+/* Page content */
+.content {
+    padding: 50px;
+    }

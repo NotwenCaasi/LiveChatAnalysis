@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Live Chat Analysis</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Sonsie+One" rel="stylesheet"
+        type="text/css">
+    <link rel="stylesheet" href="../styles/style.css">
+
+    <!-- Les trois lignes ci‑dessous sont un correctif pour que la sémantique
+         HTML5 fonctionne correctement avec les anciennes versions de
+         Internet Explorer-->
+    <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+    <![endif]-->
+
+    <script src="https://d3js.org/d3.v5.js"></script>
+
+</head>
+
+<body>
+    <!-- Voici notre en‑tête principale utilisée dans toutes les pages
+         de notre site web -->
+    <div class="header" id=myHeader>
+        <header>
+            <h1>L'analyse en temps réel d'une discussion par chat sur Twitch</h1>
+        </header>
+
+        <nav>
+            <!-- Barre de navigation du site -->
+            <ul>
+                <li>
+                    <!-- Choix du direct twitch que l'on veut analyser -->
+                    <form>
+                        <input type="search" name="q" placeholder="Direct twitch à analyser">
+                        <input type="submit" value="Lancer !">
+                    </form>
+                </li>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="description.html">Présentation de l'outil</a></li>
+                <li><a href="exemples.html">Exemples d'analyses</a></li>
+                <li><a href="developpement.html">Développement</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+
+    </div>
+   
+
+
+
+    <!-- Ici nous mettons le contenu de la page -->
+    <main class=content>
+
+        <!-- Il contient un article -->
+        <article>
+            <h2>Exemples d'analyses réalisées</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Donec a diam lectus. Set sit amet ipsum mauris.
+                Maecenas congue ligula as quam viverra nec consectetur ant hendrerit. Donec et mollis dolor. Praesent et
+                diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia
+                consectetur.</p>
+
+                
+            <h2>Interviews politiques</h2>
+
+            <h3>Stream de Samuel Etienne et François Hollande</h3>
+            <p>Donec ut librero sed accu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur
+                adipisicing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor.
+            </p>
+            <p>Pelientesque auctor nisi id magna consequat sagittis. Curabitur dapibus, enim sit amet elit pharetra
+                tincidunt feugiat nist imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros.
+            </p>
+
+            <h3>Stream de Samuel Etienne et Jean Castex</h3>
+
+            <script></script>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="5">Les regroupements de mots</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="cluster-word-0">
+                            <script>
+                                width = document.getElementById("cluster-word-0").offsetWidth * 0.95,
+                                height = width,
+                                fontFamily = "Open Sans",
+                                fontScale = d3.scaleLinear().range([20, 50]), // Construction d'une échelle linéaire continue qui va d'une font de 20px à 120px
+                                fillScale = d3.scaleOrdinal(d3.schemeCategory10); // Construction d'une échelle discrète composée de 10 couleurs différentes
+
+                                d3.csv("https://github.com/NotwenCaasi/LiveChatAnalysis/src/exemples/LRET-JeanCastex/words-0.csv").then(function(csv) {
+                                    var words = [];
+                                    csv.forEach(function(e,i) {
+                                        words.push({"text": e.LABEL, "size": +e.COUNT});
+                                    });
+                                    let minSize = d3.min(words, d => d.size);
+                                    let maxSize = d3.max(words, d => d.size);
+
+                                    // Nous projettons le domaine [plus_petite_occurence, plus_grande_occurence] vers le range [20, 120]
+                                    // Ainsi les mots les moins fréquents seront plus petits et les plus fréquents plus grands
+                                    fontScale.domain([minSize, maxSize]);
+
+                                    d3.layout.cloud()
+                                        .size([width, height])
+                                        .words(words)
+                                        .padding(1)
+                                        .rotate(function() {
+                                            return ~~(Math.random() * 2) * 45;
+                                        })
+                                        .spiral("rectangular")
+                                        .font(fontFamily)
+                                        .fontSize(d => fontScale(d.size))
+                                        .on("end", draw)
+                                        .start();
+
+                                        function draw() {
+                                            d3.select("#cluster-word-0").append("svg") // Ajout d'un élément SVG sur un DIV existant de la page
+                                                .attr("class", "svg")
+                                                .attr("width", width)
+                                                .attr("height", height)
+                                                .append("g") // Ajout du groupe qui contiendra tout les mots
+                                                    .attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")") // Centrage du groupe
+                                                    .selectAll("text")
+                                                    .data(words)
+                                                    .enter().append("text") // Ajout de chaque mot avec ses propriétés
+                                                        .style("font-size", d => d.size + "px")
+                                                        .style("font-family", fontFamily)
+                                                        .style("fill", d => fillScale(d.size))
+                                                        .attr("text-anchor", "middle")
+                                                        .attr("transform", d => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
+                                                        .text(d => d.text);
+                                        }
+                                });
+                            </script>
+
+                        </td>
+                        <td id="cluster-word-1">
+                            <script>
+                                width = document.getElementById("cluster-word-1").offsetWidth * 0.95,
+                                height = width,
+                                fontFamily = "Open Sans",
+                                fontScale = d3.scaleLinear().range([20, 50]), // Construction d'une échelle linéaire continue qui va d'une font de 20px à 120px
+                                fillScale = d3.scaleOrdinal(d3.schemeCategory10); // Construction d'une échelle discrète composée de 10 couleurs différentes
+
+                                d3.csv("https://github.com/NotwenCaasi/LiveChatAnalysis/src/exemples/LRET-JeanCastex/words-1.csv").then(function(csv) {
+                                    var words = [];
+                                    csv.forEach(function(e,i) {
+                                        words.push({"text": e.LABEL, "size": +e.COUNT});
+                                    });
+                                    let minSize = d3.min(words, d => d.size);
+                                    let maxSize = d3.max(words, d => d.size);
+
+                                    // Nous projettons le domaine [plus_petite_occurence, plus_grande_occurence] vers le range [20, 120]
+                                    // Ainsi les mots les moins fréquents seront plus petits et les plus fréquents plus grands
+                                    fontScale.domain([minSize, maxSize]);
+
+                                    d3.layout.cloud()
+                                        .size([width, height])
+                                        .words(words)
+                                        .padding(1)
+                                        .rotate(function() {
+                                            return ~~(Math.random() * 2) * 45;
+                                        })
+                                        .spiral("rectangular")
+                                        .font(fontFamily)
+                                        .fontSize(d => fontScale(d.size))
+                                        .on("end", draw)
+                                        .start();
+
+                                        function draw() {
+                                            d3.select("#cluster-word-1").append("svg") // Ajout d'un élément SVG sur un DIV existant de la page
+                                                .attr("class", "svg")
+                                                .attr("width", width)
+                                                .attr("height", height)
+                                                .append("g") // Ajout du groupe qui contiendra tout les mots
+                                                    .attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")") // Centrage du groupe
+                                                    .selectAll("text")
+                                                    .data(words)
+                                                    .enter().append("text") // Ajout de chaque mot avec ses propriétés
+                                                        .style("font-size", d => d.size + "px")
+                                                        .style("font-family", fontFamily)
+                                                        .style("fill", d => fillScale(d.size))
+                                                        .attr("text-anchor", "middle")
+                                                        .attr("transform", d => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
+                                                        .text(d => d.text);
+                                        }
+                                });
+                            </script>
+
+                        </td>
+                        <td id="cluster-word-2">
+                            <script>
+                                width = document.getElementById("cluster-word-2").offsetWidth * 0.95,
+                                height = width,
+                                fontFamily = "Open Sans",
+                                fontScale = d3.scaleLinear().range([20, 50]), // Construction d'une échelle linéaire continue qui va d'une font de 20px à 120px
+                                fillScale = d3.scaleOrdinal(d3.schemeCategory10); // Construction d'une échelle discrète composée de 10 couleurs différentes
+
+                                d3.csv("https://github.com/NotwenCaasi/LiveChatAnalysis/src/exemples/LRET-JeanCastex/words-2.csv").then(function(csv) {
+                                    var words = [];
+                                    csv.forEach(function(e,i) {
+                                        words.push({"text": e.LABEL, "size": +e.COUNT});
+                                    });
+                                    let minSize = d3.min(words, d => d.size);
+                                    let maxSize = d3.max(words, d => d.size);
+
+                                    // Nous projettons le domaine [plus_petite_occurence, plus_grande_occurence] vers le range [20, 120]
+                                    // Ainsi les mots les moins fréquents seront plus petits et les plus fréquents plus grands
+                                    fontScale.domain([minSize, maxSize]);
+
+                                    d3.layout.cloud()
+                                        .size([width, height])
+                                        .words(words)
+                                        .padding(1)
+                                        .rotate(function() {
+                                            return ~~(Math.random() * 2) * 45;
+                                        })
+                                        .spiral("rectangular")
+                                        .font(fontFamily)
+                                        .fontSize(d => fontScale(d.size))
+                                        .on("end", draw)
+                                        .start();
+
+                                        function draw() {
+                                            d3.select("#cluster-word-2").append("svg") // Ajout d'un élément SVG sur un DIV existant de la page
+                                                .attr("class", "svg")
+                                                .attr("width", width)
+                                                .attr("height", height)
+                                                .append("g") // Ajout du groupe qui contiendra tout les mots
+                                                    .attr("transform", "translate(" + width / 2 + ", " + height / 2 + ")") // Centrage du groupe
+                                                    .selectAll("text")
+                                                    .data(words)
+                                                    .enter().append("text") // Ajout de chaque mot avec ses propriétés
+                                                        .style("font-size", d => d.size + "px")
+                                                        .style("font-family", fontFamily)
+                                                        .style("fill", d => fillScale(d.size))
+                                                        .attr("text-anchor", "middle")
+                                                        .attr("transform", d => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")")
+                                                        .text(d => d.text);
+                                        }
+                                });
+                            </script>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Stream de Jean Massiet et Philippe Bas</h3>
+            <p>Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum soclis natoque penatibus et manis dis
+                parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem
+                facilisis semper ac in est.</p>
+            <p>Vivamus fermentum semper porta. Nunc diam velit, adipscing ut tristique vitae sagittis vel odio. Maecenas
+                convallis ullamcorper ultricied. Curabitur ornare, ligula semper consectetur sagittis, nisi diam iaculis
+                velit, is fringille sem nunc vet mi.</p>
+
+
+            <h2>Journalisme sur Twitch</h2>
+
+            <h3>Stream de BFMTV sur la santé: 1er essai-filtrage des trolls</h3>
+            <p>Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum soclis natoque penatibus et manis dis
+                parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem
+                facilisis semper ac in est.</p>
+            <p>Vivamus fermentum semper porta. Nunc diam velit, adipscing ut tristique vitae sagittis vel odio. Maecenas
+                convallis ullamcorper ultricied. Curabitur ornare, ligula semper consectetur sagittis, nisi diam iaculis
+                velit, is fringille sem nunc vet mi.</p>
+
+            <h3>Stream de BFMTV sur la santé : 2ème essai</h3>
+            <p>Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum soclis natoque penatibus et manis dis
+                parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem
+                facilisis semper ac in est.</p>
+            <p>Vivamus fermentum semper porta. Nunc diam velit, adipscing ut tristique vitae sagittis vel odio. Maecenas
+                convallis ullamcorper ultricied. Curabitur ornare, ligula semper consectetur sagittis, nisi diam iaculis
+                velit, is fringille sem nunc vet mi.</p>
+
+            <h3>Stream de FranceTV sur les jeunes</h3>
+            <p>Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum soclis natoque penatibus et manis dis
+                parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem
+                facilisis semper ac in est.</p>
+            <p>Vivamus fermentum semper porta. Nunc diam velit, adipscing ut tristique vitae sagittis vel odio. Maecenas
+                convallis ullamcorper ultricied. Curabitur ornare, ligula semper consectetur sagittis, nisi diam iaculis
+                velit, is fringille sem nunc vet mi.</p>
+
+
+            <h2>Revues de presse</h2>
+
+            <h3>Stream de Marinette Périn: revue de presse </h3>
+            <p>Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum soclis natoque penatibus et manis dis
+                parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem
+                facilisis semper ac in est.</p>
+            <p>Vivamus fermentum semper porta. Nunc diam velit, adipscing ut tristique vitae sagittis vel odio. Maecenas
+                convallis ullamcorper ultricied. Curabitur ornare, ligula semper consectetur sagittis, nisi diam iaculis
+                velit, is fringille sem nunc vet mi.</p>
+
+            <h3>Stream de Samuel Etienne: revue de presse </h3>
+            <p>Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum soclis natoque penatibus et manis dis
+                parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem
+                facilisis semper ac in est.</p>
+            <p>Vivamus fermentum semper porta. Nunc diam velit, adipscing ut tristique vitae sagittis vel odio. Maecenas
+                convallis ullamcorper ultricied. Curabitur ornare, ligula semper consectetur sagittis, nisi diam iaculis
+                velit, is fringille sem nunc vet mi.</p>
+
+            <h3>Stream de Usul: revue de presse </h3>
+            <p>Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum soclis natoque penatibus et manis dis
+                parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem
+                facilisis semper ac in est.</p>
+            <p>Vivamus fermentum semper porta. Nunc diam velit, adipscing ut tristique vitae sagittis vel odio. Maecenas
+                convallis ullamcorper ultricied. Curabitur ornare, ligula semper consectetur sagittis, nisi diam iaculis
+                velit, is fringille sem nunc vet mi.</p>
+
+        </article>
+
+    </main>
+
+    <!-- Et voici notre pied de page utilisé sur toutes les pages du site -->
+    <footer>
+        <p>©Copyright 2050 par personne. Tous droits reversés.</p>
+    </footer>
+
+</body>
+
+</html>
